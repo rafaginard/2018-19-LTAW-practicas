@@ -7,8 +7,12 @@ console.log("Arrancando servidor...")
 http.createServer(function (req, res) {
   var q = url.parse(req.url, true);
   var filename = "." + q.pathname;
-
+  
+  if (q.pathname == ('/')){
+    filename = "index.html";
+  }
   fs.readFile(filename, function(err, data){
+
     //Control por si el server no funciona.
     if (err){
       res.writeHead(404, {'Content-Type': 'text/html'});
@@ -19,5 +23,5 @@ http.createServer(function (req, res) {
   res.write(data);
   res.end();
   console.log("Peticion Atendida")
-});
+  });
 }).listen(8080);
