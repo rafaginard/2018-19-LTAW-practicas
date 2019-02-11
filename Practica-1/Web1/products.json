@@ -1,5 +1,5 @@
 
-  products = '[
+  [
     {
     "name": "esquis",
     "color": "orange",
@@ -24,4 +24,4 @@
     "style": "expert",
     "image": "Botas.jpg"
     }
-  ]';
+  ]
