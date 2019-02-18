@@ -1,5 +1,12 @@
 from django.http import HttpResponse
 from django.template import Template, Context
+from django.template.loader import get_template
+
+
+def Init(request):
+    t = Template('/home/alumnos/rginard/Escritorio/LTW_Practicas/2018-19-LTAW-practicas/Practica-2/mi_tienda/mi_tienda/templates/index.html')
+    
+    return HttpResponse(t)
 
 def Mi_Funcion(request):
     html = "HOLA, probando"
