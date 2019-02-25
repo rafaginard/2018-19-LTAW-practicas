@@ -1,23 +1,18 @@
 from django.http import HttpResponse
 from django.template import Template, Context
 from django.template.loader import get_template
-
+from django.shortcuts import render
 
 def Init(request):
-    t = Template('/home/alumnos/rginard/Escritorio/LTW_Practicas/2018-19-LTAW-practicas/Practica-2/mi_tienda/mi_tienda/templates/index.html')
-    
-    return HttpResponse(t)
 
-def Mi_Funcion(request):
-    html = "HOLA, probando"
+    return render(request, 'index.html', {'user' : 'Rafa'})
 
-    return HttpResponse(html)
+def Botas(request):
+    return render(request, 'botas.html', {})
 
-def Mi_Producto(request, param):
-    numero = int(param)
+def Esquis(request):
+    return render(request, 'esquis.html', {})
 
-    html = "Acceso al producto: %i" %numero
-    return HttpResponse(html)
 
 PLANTILLA = """
     <!DOCTYPE html>
@@ -32,11 +27,3 @@ PLANTILLA = """
       </body>
     </html>
 """
-
-def saludo(request):
-    t = Template(PLANTILLA)
-    c = Context({'user': 'Rafa'})
-
-    html = t.render(c)
-
-    return HttpResponse(html)

@@ -19,8 +19,7 @@ from mi_tienda import views
 
 urlpatterns = [
     url(r'^test/', include(admin.site.urls)),
-    url(r'^hola/', views.Mi_Funcion),
-    url(r'^producto/(\d{1,2})/', views.Mi_Producto),
-    url(r'^saludo/', views.saludo),
-    url(r'^init/', views.Init),
+    url(r'^botas/', views.Botas),
+    url(r'^esquis', views.Esquis),
+    url(r'^$', views.Init),
 ]

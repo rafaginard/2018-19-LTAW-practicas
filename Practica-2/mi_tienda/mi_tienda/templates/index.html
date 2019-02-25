@@ -1,12 +1,13 @@
 <html>
   <body>
     <head>
-      <link rel="stylesheet" type="text/css" href="index.css">
+      {% load static %}
+      <link rel="stylesheet" type="text/css" href="{% static 'mi_tienda/index.css' %}">
       <h1>Mi Tienda</h1>
-        <p><b>Lo que puedes comprar.</b></p>
-        <p><a href="esquis.html">Esquis</a></p>
-        <p><a href="botas.html">Botas</a></p>
-        <p>{{user}}</p>
+        <p><b>Bienvenido {{user}}.</b></p>
+        <p><a href="esquis">Esquis</a></p>
+        <p><a href="botas">Botas</a></p>
+
     </head>
   </body>
 </html>
