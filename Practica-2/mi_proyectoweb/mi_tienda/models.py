@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
+
 from django.db import models
 
+# Create your models here.
 class Esquis(models.Model):
     ID = models.IntegerField()
     Marca = models.CharField(max_length=50)
