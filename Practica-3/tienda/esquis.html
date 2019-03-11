@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <script type="text/javascript" src="products.json"></script>
+    <body>
+      <h1>Esquis Alpino</h1>
+      <p>Hola</p>
+      <script>
+      var fs=require('fs');
+      var data=fs.readFileSync('products.json', 'utf8');
+      var words=JSON.parse(data);
+      console.log(obj);
+      </script>
+
+    </body>
+  </head>
+</html>
