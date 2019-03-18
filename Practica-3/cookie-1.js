@@ -1,5 +1,6 @@
 var http = require('http');
 var url = require('url');
+var fs = require('fs');
 
 const PORT = 8080
 
@@ -22,39 +23,48 @@ http.createServer((req, res) => {
 
     //-- Pagina principal
     case "/":
-      content = "Bienvenido a mi tienda "
-
-      //-- No hay ninguna cookie
-      if (!cookie) {
-        content += "\nNo te conozco... Registrate!\n"
-        content += "Accede a /login"
-
-      //-- Hay definida una Cookie.
-      } else {
-        content += "Obijuan"
-      }
-
-      res.statusCode = 200;
+      fs.readFile("./index.html", function(err, data) {
+        //-- Generar el mensaje de respuesta
+        res.writeHead(200, {'Content-Type': 'text/html'});
+        res.write(data);
+        res.end();
+        return
+      });
       break;
 
     //-- Pagina de acceso
-    case "/login":
-      content = "Registrado! Cookie enviada al navegador!"
+    case "/client-2.js":
+      fs.readFile("./client-2.js", function(err, data) {
+        //-- Generar el mensaje de respuesta
+        res.writeHead(200, {'Content-Type': 'application/javascript'});
+        res.write(data);
+        res.end();
+        return
+      });
+      break;
 
-      //-- ESTABLECER LA COOKIE!!
-      res.setHeader('Set-Cookie', 'user=obijuan')
+    case "/myquery":
+
+      content = `
+        {
+          "productos": ["FPGA", "RISC-V", "74ls00"]
+        }
+        `
+      res.setHeader('Content-Type', 'application/json')
+      res.write(content);
+      res.end();
+
+      return
       break
-
     //-- Se intenta acceder a un recurso que no existe
     default:
       content = "Error";
       res.statusCode = 404;
+      res.setHeader('Content-Type', 'text/plain')
+      res.write(content);
+      res.end();
+
   }
-
-
   //-- Generar el mensaje de respuesta
-  res.setHeader('Content-Type', 'text/plain')
-  res.write(content);
-  res.end();
 
 }).listen(PORT);

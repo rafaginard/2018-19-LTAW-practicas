@@ -13,7 +13,7 @@ http.createServer(function (req, res) {
   //-- Leer las cookies
   var cookie = req.headers.cookie;
   console.log("Cookie: " + cookie)
-
+  console.log(q.pathname)
 
   if (q.pathname == ('/')){
     if (!cookie) {
@@ -21,20 +21,18 @@ http.createServer(function (req, res) {
 
     //-- Hay definida una Cookie.
     } else {
-      filename += "index2.html"
+       filename += "index2.html";
     }
 
     res.statusCode = 200;
   }
-  else if ("/login"){
-    filename = "index2.html"
-
-    //-- ESTABLECER LA COOKIE!!
-    res.setHeader('Set-Cookie', 'user=rafa')
+  else if (q.pathname == ('/login')){
+    res.setHeader('Set-Cookie', 'user=Rafa')
+    q.pathname = "/index2.html"
+    filename = "." + q.pathname
   }
-
   fs.readFile(filename, function(err, data){
-
+    console.log(filename);
     //Control por si el server no funciona.
     if (err){
       res.writeHead(404, {'Content-Type': 'text/html'});
