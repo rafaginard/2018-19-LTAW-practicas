@@ -11,10 +11,12 @@ function main() {
 
   //-- Parrafo para mostrar mensajes recibidos
   var display = document.getElementById('display')
-
+  var UsersConnected = document.getElementById("Users_Names")
   //-- Caja con el mensaje a enviar
   var msg = document.getElementById("msg")
 
+  //-- Log de usuarios conectados y desconectados
+  var logger = document.getElementById("logger")
   //-- Cuando se aprieta el botón de enviar...
   send.onclick = () => {
 
@@ -27,8 +29,29 @@ function main() {
 
   //-- Cuando se reciba un mensaje del servidor se muestra
   //-- en el párrafo
-  socket.on('new_message', msg => {
+  socket.on('new_message', function(msg, user){
     display.innerHTML = msg;
   });
 
+  socket.on('list', function(list){
+    $("#UsersConnected").empty();
+    list.forEach(function(element){
+      $("#UsersConnected").append($('<li>'+ element + '</li>'));
+    });
+  });
+
+  socket.on('new_user', function(msg, user){
+    console.log(user);
+    $("#logger").empty();
+    $("#logger").append($('<li>'+ user + " " + msg + '</li>'));
+
+    //User_Name.innerHTML = user;
+    console.log("NUEVO USUARIO");
+  });
+
+  socket.on('User_Disconnect', function(msg, user){
+    $("#logger").empty();
+    $("#logger").append($('<li>' + msg + '</li>'));
+    console.log("USUARIO SE HA DESCONECTADO");
+  });
 }

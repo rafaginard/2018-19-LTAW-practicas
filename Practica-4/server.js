@@ -2,16 +2,49 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 
+
+var CLIENTS = [];
+var id;
+var max_clients = 10;
+
 //--Servir la pagina principal
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
   console.log("Página principal: /")
 });
 
+//--Servir la pagina con los comandos
+app.get('/help', function(req, res){
+  res.sendFile(__dirname + '/comandos.html');
+  console.log("Página de comandos solicitada")
+});
+
+app.get('/list', function(req, res){
+  if(CLIENTS.length == 0){
+    res.send("Hay 0 usuarios conectados");
+  }
+    n = String(CLIENTS.length)
+    res.send("Hay " + n + " usuarios conectados");
+  console.log("Numero de usuarios conectados")
+});
+
+app.get('/hello', function(req, res){
+  res.send("Hola desde el SERVIDOR!");
+  console.log("Saludo desde el servidor")
+});
+
+app.get('/date', function(req, res){
+  var today = new Date();
+  var date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+  var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  var dateTime = "La fecha de hoy es: " + date +' '+ time;
+  res.send(dateTime);
+  console.log("Pedimos la fecha")
+});
 //-- Servir el cliente javascript
 app.get('/chat-client.js', function(req, res){
   res.sendFile(__dirname + '/chat-client.js');
-  console.log("Fichero js solicituado")
+  console.log("Fichero js solicitado")
 });
 
 //-- Lanzar el servidor
@@ -23,11 +56,31 @@ http.listen(3000, function(){
 //-- Evento: Nueva conexion recibida
 //-- Un nuevo cliente se ha conectado!
 io.on('connection', function(socket){
-  console.log('--> Usuario conectado!');
+  id = Generate_ID(CLIENTS)
 
+  console.log("--> Usuario " + id + " se ha conectado!");
+  new_user = {"Name": "Usuario " + id, clave: id, ws: socket}
+  CLIENTS.push(new_user);
+
+  //NUEVO USUARIO CONECTADO
+  message = '--> Usuario Conectado!';
+  sendAll('new_user', message);
+  sendClients(CLIENTS);
+  console.log(CLIENTS.length);
   //-- Detectar si el usuario se ha desconectado
   socket.on('disconnect', function(){
-    console.log('--> Usuario Desconectado');
+
+    CLIENTS.forEach(function(element){
+      if (element.ws.id == socket.id){
+        console.log("--> Usuario " + element.Name + " se ha desconectado!");
+        CLIENTS.splice( CLIENTS.indexOf(element), 1 );
+        message = element.Name + ' --> Usuario Desconectado!';
+      }
+    });
+
+    sendAll('User_Disconnect', message);
+    sendClients(CLIENTS);
+    console.log(CLIENTS.length);
   });
 
   //-- Detectar si se ha recibido un mensaje del cliente
@@ -38,6 +91,34 @@ io.on('connection', function(socket){
 
     //-- Emitir un mensaje a todos los clientes conectados
     io.emit('new_message', msg);
+
   })
+
+function sendClients(list){
+  list_names = [];
+  list.forEach(function(element){
+    console.log(element.Name);
+    list_names.push(element.Name)
+  });
+  console.log(list_names);
+  io.emit("list", list_names)
+}
+
+function sendAll(type, message){
+  CLIENTS.forEach(function(element){
+    console.log("SE LO ENVIO A: " + element.Name)
+    io.emit(type, message, element.Name)
+  });
+}
+
+function Generate_ID(List){
+  id = Math.floor(Math.random() * (max_clients - 1)) + 1;
+  for (j=0; j <= CLIENTS.length; j++){
+    if (id == CLIENTS.clave){
+      Generate_ID(CLIENTS);
+    }
+  }
+  return id;
+}
 
 });
