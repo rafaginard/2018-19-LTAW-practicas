@@ -19,6 +19,7 @@ app.get('/help', function(req, res){
   console.log("Página de comandos solicitada")
 });
 
+//--Servir lista de conectados
 app.get('/list', function(req, res){
   if(CLIENTS.length == 0){
     res.send("Hay 0 usuarios conectados");
@@ -28,11 +29,13 @@ app.get('/list', function(req, res){
   console.log("Numero de usuarios conectados")
 });
 
+//--Servir saludo desde el servidor
 app.get('/hello', function(req, res){
   res.send("Hola desde el SERVIDOR!");
   console.log("Saludo desde el servidor")
 });
 
+//--Servir fecha actual
 app.get('/date', function(req, res){
   var today = new Date();
   var date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
@@ -88,9 +91,44 @@ io.on('connection', function(socket){
 
     //-- Notificarlo en la consola del servidor
     console.log("Mensaje recibido: " + msg)
+    if (msg == '/help'){
+      respuesta = "<p>Lista de Comandos</p>" +
+          "<ul>" +
+            "<li>comando /help ---->Muestra una lista con todos los comandos soportados</li>" +
+            "<li>comando /list ---->Devuleve el numero de usuarios conectados</li>" +
+            "<li>comando /hello ---->El servidor nos devuelve un saludo</li> " +
+            "<li>comando /date ---->Nos devolvera la fecha</li> " +
+          "</ul>"
+      socket.emit('new_message', respuesta);
+      console.log("Ha pedido la lista de comandos");
 
+    }else if (msg == '/date'){
+
+      var today = new Date();
+      var date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+      var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+      var dateTime = "La fecha de hoy es: " + date +' '+ time;
+      socket.emit('new_message', dateTime);
+
+    }else if (msg == '/list'){
+
+      if(CLIENTS.length == 0){
+        socket.emit('new_message', "Hay 0 usuarios conectados");
+      }
+        n = String(CLIENTS.length)
+        socket.emit('new_message', "Hay " + n + " usuarios conectados");
+      console.log("Numero de usuarios conectados")
+
+    }else if (msg == '/hello'){
+
+      socket.emit('new_message', "Hola desde el SERVIDOR!");
+      console.log("Saludo desde el servidor")
+    }
     //-- Emitir un mensaje a todos los clientes conectados
-    io.emit('new_message', msg);
+    else {
+
+      io.emit('new_message', msg);
+    }
 
   })
 
